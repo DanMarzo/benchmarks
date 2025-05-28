@@ -1,10 +1,16 @@
 ﻿using BenchApp;
-using BenchmarkDotNet.Running;
+using Bogus;
+using Domain.Models;
+using RepositoryPadrao;
 
-BenchmarkRunner.Run<ExecuteBench>();
+Repository repository = new Repository(ConstsSQL.ConnectionString);
+var faker = new Faker("pt_BR");
+PessoaModel pee = new PessoaModel()
+{
+    CPF = "###.###.###-##",
+    Id = Guid.NewGuid()
+};
 
-//var tes = new ExecuteBench();
+await repository.GetAsync(x => x.CPF == pee.CPF && !x.EmAtividade && x.Id == pee.Id);
 
-//await tes.GetPessoasWithDapper();
-
-Console.ReadKey();
+//await repository.GetAsync(x => x.EmAtividade);
